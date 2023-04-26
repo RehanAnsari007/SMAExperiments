@@ -1,0 +1,241 @@
+
+
+1st Experiment & 5th Experiment
+
+    import requests
+    video_id="NuExff4-ty4"
+    api_key="AIzaSyDy0L7Mo41oAITYpeHGZcBH69MBY83Q91o"
+    video_info_url=f"https://www.googleapis.com/youtube/v3/videos?part=Snippet&id={video_id}&key={api_key}"
+    video_info_response=requests.get(video_info_url)
+    video_info_data=video_info_response.json()
+    video_info_data
+
+    video_id="NuExff4-ty4"
+    api_key="AIzaSyDy0L7Mo41oAITYpeHGZcBH69MBY83Q91o"
+    comments_url=f"https://www.googleapis.com/youtube/v3/commentThreads?part=Snippet&video_id={video_id}&key={api_key}"
+    comments_response = requests.get(comments_url)
+    comments_data=comments_response.json()
+    comments_data
+
+    from textblob import TextBlob
+
+    def get_comment_sentiment(comments_data):
+      analysis = TextBlob(comments_data)
+      if analysis.sentiment.polarity > 0:
+        return "postive"
+      elif analysis.sentiment.polarity < 0:
+        return "negative"
+      else:
+        return "neutral"
+
+    comment_list=[]
+    sentiment_list=[]
+    for comment in comments:
+      sentiment = get_comment_sentiment(comment)
+      comment_list.append(comment)
+      sentiment_list.append(sentiment)
+      print(f"{comment}:{sentiment}")
+
+    
+2nd Experiment
+
+    import pandas as pd
+    import io
+    import numpy as np
+    import os
+    import seaborn as sas
+    df = pd.read_csv('facebook.csv')
+    print(df)
+ 
+
+    df.isnull().sum()
+
+
+    sas.heatmap(df.isnull())
+
+
+
+    df1 = df.dropna()
+    df1
+
+    df2 = df.dropna(how="all")
+    df2
+
+    df1 = df.fillna(0)
+    df1.head()
+
+    df2 = df.fillna(method='ffill')
+    df2
+
+    df2 = df.fillna(method='bfill')
+    df2
+    df3 = df.interpolate()
+    df3
+
+           
+    df.shape
+
+    (53, 15)
+
+    import pandas as pd
+    df=pd.read_csv('YouTube_Comments_Sentiment.csv')
+    df_text=df[['Comments']]
+    df_text.head()
+
+
+    df_text['Comments']=df_text['Comments'].str.lower()
+    df_text.head()
+
+    import nltk
+    nltk.download('punkt')
+    from nltk import word_tokenize
+    df_text['Comments']=df_text['Comments'].apply(lambda X: word_tokenize(X))
+    df_text.head()
+
+    import nltk
+    nltk.download('stopwords')
+    from nltk.corpus import stopwords
+    print(stopwords.words('english'))
+
+    
+
+    en_stopwords = stopwords.words('english')
+
+    def remove_stopwords(text):
+        result = []
+        for token in text:
+            if token not in en_stopwords:
+                result.append(token)
+                
+        return result
+
+    #Test
+    text = "this is the only solution of that question".split() 
+    remove_stopwords(text)
+
+ 
+
+    df_text['Comments'] = df_text['Comments'].apply(remove_stopwords)
+    df_text.head()
+
+    from nltk.tokenize import RegexpTokenizer
+
+    def remove_punct(text):
+        
+        tokenizer = RegexpTokenizer(r"\w+")
+        lst=tokenizer.tokenize(' '.join(text))
+        return lst
+
+    #Test
+    text=df_text['Comments'][0] 
+    print(text) 
+    remove_punct(text)
+
+  
+    df_text['Comments'] = df_text['Comments'].apply(remove_punct)
+    df_text.head()
+
+                               
+4rth experiment(Data Visualization)
+
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import numpy as np
+    from scipy.stats import norm
+    from sklearn.preprocessing import StandardScaler
+    from scipy import stats
+    import warnings
+    warnings.filterwarnings('ignore')
+    %matplotlib inline
+
+    sns.distplot(Df['age']);
+
+[]
+
+    corrmat = Df.corr()
+    f, ax = plt.subplots(figsize=(12, 9))
+    sns.heatmap(corrmat, vmax=.8, square=True);
+
+[]
+
+    sns.set()
+    cols = ['age', 'dob_day', 'dob_year', 'dob_month', 'tenure', 'likes']
+    sns.pairplot(Df[cols], size = 2.5)
+    plt.show()
+
+[]
+
+    import networkx as nx
+    from matplotlib.pyplot import figure
+    G = nx.Graph()
+    G = nx.from_pandas_edgelist(Df, 'age', 'likes')
+    figure(figsize=(10, 8))
+    nx.draw_circular(G, with_labels=True)
+    figure(figsize=(10, 8))
+    nx.draw_random(G, with_labels=True)
+    figure(figsize=(10, 10))
+    pos = nx.spiral_layout(G)
+    nx.draw(G, pos=pos,with_labels=True)
+    figure(figsize=(10, 10))
+    nx.draw_shell(G, with_labels=True)
+
+[]
+
+[]
+
+[]
+
+[]
+
+7th Experiment (To Develop Dashboard)
+
+    !pip install snscrape
+
+
+    import pandas as pd
+    import snscrape.modules.twitter as snstwitter
+    from google.colab import files
+    import os
+    import datetime 
+    import json
+    from tqdm.notebook import tqdm_notebook 
+    import numpy as np 
+
+    os.system("snscrape --jsonl --max-results 500 --since 2020-06-01 twitter-search \"its the elephant until:2020-07-31\" > text-query-tweets.json")
+
+    256
+
+    tweets_df = pd.read_json('Covid.json', lines=True)
+    tweets_df.to_csv('UFC.csv',encoding='utf-8-sig')
+    #files.download('UFC.csv')
+
+3rd Experiment
+
+first do the 7th wala scraping ka part then continue with this section
+
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    %matplotlib inline
+
+    data = 'SMA_Twitter.xlsx'
+
+    df = pd.read_excel(data)
+
+    df.shape
+
+    (483, 37)
+
+    df.head()
+
+    df.info()
+
+    df.isnull().sum()
+
+    df.describe()
+
+    df.describe(include=['object'])
+
+    df.describe(include='all')
